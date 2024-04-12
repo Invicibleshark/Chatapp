@@ -1,8 +1,8 @@
 import React, { Children, useContext } from "react";
 import ReactDOM from "react-dom/client";
-import Register from "./src/components/Register";
+import Register from "./src/components/Register.js";
 import './src/components/index.css'
-import Login from "./src/components/Login";
+import Login from "./src/components/Login.js";
 import Home from "./src/components/Home.js"
 import { BrowserRouter,Routes,Route, Navigate } from "react-router-dom";
 import { AuthContext } from "./src/context/AuthContext.js";
