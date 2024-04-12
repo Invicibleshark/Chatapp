@@ -68,16 +68,17 @@ const Register = () => {
                     <input type="text" placeholder="Enter Your Name"/>
                     <input type="email" placeholder="Enter Your EmailId"/>
                     <input type="password" placeholder="Enter Your Password"/>
-                    <input style={{display:"none"}} type="file" id="file"/>
+              
+                    <input required style={{ display: "none" }} type="file" id="file" />
                     <label htmlFor="file">
-                    <img src={Add} className="Setimage" alt="" />
-                    <span>Add an Avatar</span>
+                      <img className="Setimage" src={Add} alt="" />
+                      <span>Add an avatar</span>
                     </label>
                     <button  disabled={loading}>SignUp</button>
                     {loading && "Uploading and compressing the image please wait..."}
                     {err && <span>Something Went Wrong</span>}
                 </form>
-                <p>or Login to Your Account</p>
+                <p>or <Link to="/login"> Login </Link>to Your Account</p>
             </div>
         </div>
     )

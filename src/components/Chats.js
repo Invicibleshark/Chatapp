@@ -1,29 +1,44 @@
-import React from 'react'
+import { doc, onSnapshot } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { ChatContext } from "../context/ChatContext.js";
+import { db } from "../../firebase";
 
-export const Chats = () => {
+const Chats = () => {
+  const [chats, setChats] = useState([]);
+
+  const { currentUser } = useContext(AuthContext);
+  const { dispatch } = useContext(ChatContext);
+
+  useEffect(() => {
+    const getChats = () => {
+      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+        setChats(doc.data());
+      });
+
+      return () => {
+        unsub();
+      };
+    };
+
+    currentUser.uid && getChats();
+  }, [currentUser.uid]);
+
+  const handleSelect = (u) => {
+    dispatch({ type: "CHANGE_USER", payload: u });
+  };
   return (
     <div className='Chats'>
-      <div className='userChat'>
-        <img src="https://img-getpocket.cdn.mozilla.net/404x202/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2F4ace85b4-5732-4d20-bd75-eda98c53926c.jpeg" alt="img"/>
+      {Object.entries(chats)?.sort((a,b)=>b[1].date-a[1].date).map((chat)=>(
+      <div className='userChat' key={chat[0]} onClick={()=>handleSelect(chat[1].userInfo)}>
+        <img src={chat[1].userInfo.photoURL} alt="img"/>
         <div className='userChatInfo'>
-        <span>Keshav</span>
-        <p>Hello</p>
-      </div>   
-    </div>
-    <div className='userChat'>
-        <img src="https://img-getpocket.cdn.mozilla.net/404x202/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2F4ace85b4-5732-4d20-bd75-eda98c53926c.jpeg" alt="img"/>
-        <div className='userChatInfo'>
-        <span>Keshav</span>
-        <p>Hello</p>
-      </div>   
-    </div>
-    <div className='userChat'>
-        <img src="https://img-getpocket.cdn.mozilla.net/404x202/filters:format(jpeg):quality(60):no_upscale():strip_exif()/https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fpocket-curatedcorpusapi-prod-images%2F4ace85b4-5732-4d20-bd75-eda98c53926c.jpeg" alt="img"/>
-        <div className='userChatInfo'>
-        <span>Keshav</span>
-        <p>Hello</p>
-      </div>   
-    </div>
+          <span>{chat[1].userInfo.displayName}</span>
+          <p>{chat[1].lastMessage?.text}</p>
+        </div>   
+      </div>
+      ))}
+      
     </div>
     
     
